@@ -1,0 +1,49 @@
+// Copyright 2018 Red Energy
+// Pablo Sosa (psosa_ar@yahoo.com)
+// 2018-01
+
+description = "Study Apache Camel Properties Refresh"
+//buildscript {
+//  repositories {
+//    maven {
+//      url "http://artifactory/red-energy"
+//    }
+//  }
+//}
+
+apply plugin: "groovy"
+apply plugin:'application'
+mainClassName = "au.com.redenergy.camel.Main"
+group = "au.com.redenergy"
+
+configurations {
+  // always check for new snapshot or release versions.
+  // this will apply to internal modules, which use version numbers like "latest.release"
+  all*.resolutionStrategy {
+    cacheDynamicVersionsFor 0, 'seconds'
+    cacheChangingModulesFor 0, 'seconds'
+  }
+}
+
+dependencies {
+  compile "org.slf4j:slf4j-api:1.7.25"
+  compile "org.slf4j:jcl-over-slf4j:1.7.25"
+  compile "ch.qos.logback:logback-core:1.2.2"
+  compile "ch.qos.logback:logback-classic:1.2.2"
+  compile "org.apache.camel:camel-core:2.20.0"
+//  compile "org.apache.camel:camel-core:2.19.4"
+  compile "org.codehaus.groovy:groovy:2.4.12"
+
+  compile "commons-io:commons-io:2.5"
+
+  testCompile("org.spockframework:spock-core:1.0-groovy-2.4") {
+    exclude group: "org.codehaus.groovy"
+  }
+}
+
+test {
+  forkEvery = 0
+  project.properties.keySet().findAll {it.startsWith("redrouter.")}.each {key ->
+    systemProperty(key, project.property(key))
+  }
+}

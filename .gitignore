@@ -1,0 +1,11 @@
+.gradle
+build
+out
+*.iml
+*.ipr
+*.iws
+*trace
+*debug
+*.log.*
+fileSource*
+fileTarget
